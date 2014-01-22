@@ -25,18 +25,22 @@ public class ReadXMLFile {
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = null;
 			builder = builderFactory.newDocumentBuilder();
-			Document xmlDocument = builder.parse( new FileInputStream("employees.xml"));
+			Document xmlDocument = builder.parse( new FileInputStream("Admin.profile"));
 			XPath xPath =  XPathFactory.newInstance().newXPath();
-			String expression = "/Employees/Employee[@emplid='3333']/email";
+			String layoutAssignments = "/Profile/layoutAssignments";
+			String layout = "/layout";
+			String recordType = "/recordType";
 			 
-			//read a string value
-			String email = xPath.compile(expression).evaluate(xmlDocument);
+			//String email = xPath.compile(expression).evaluate(xmlDocument);
 			 
-			//read an xml node using xpath
-			Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+			//Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
 			 
-			//read a nodelist using xpath
-			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+			NodeList nodeList = (NodeList) xPath.compile(layoutAssignments+layout).evaluate(xmlDocument, XPathConstants.NODESET);
+			System.out.println(nodeList.getLength());
+			for (int i = 0; i < nodeList.getLength(); i++) {
+//			    System.out.println(nodeList.item(i).getFirstChild().getNextSibling().getFirstChild().getNodeValue());
+			    System.out.println(nodeList.item(i).getFirstChild().getNodeValue());
+			}
 			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace(); 
