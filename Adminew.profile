@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Profile xmlns="http://soap.sforce.com/2006/04/metadata">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>Financing_Connect_Internal</application>
         <default>false</default>
@@ -4609,6 +4608,9 @@
         <recordType>Opportunity.New_Application_Stage</recordType>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Opportunity-DFS Opportunity Page Layout</layout>
+        <recordType>Opportunity.Quote_Stage</recordType>
+    </layoutAssignments><layoutAssignments>
         <layout>Opportunity-GVF - DFS Canada Opportunity Page Layout</layout>
     </layoutAssignments>
     <layoutAssignments>

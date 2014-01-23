@@ -1,17 +1,25 @@
+//String value = xPath.compile(expression).evaluate(xmlDocument);
+//Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+//NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+
 package xml.Parser;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -25,30 +33,38 @@ public class ReadXMLFile {
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = null;
 			builder = builderFactory.newDocumentBuilder();
-			Document xmlDocument = builder.parse( new FileInputStream("Admin.profile"));
-			Document newXmlDocument = builder.parse( new FileInputStream("Adminew.profile"));
+			Document sourceDOM = builder.parse( new FileInputStream("Admin.profile"));
+			Document targetDOM = builder.parse( new FileInputStream("Adminew.profile"));
 			XPath xPath =  XPathFactory.newInstance().newXPath();
-			String layoutAssignments = "/Profile/layoutAssignments";
+			String profile = "/Profile";
+			String layoutAssignments = "/layoutAssignments";
 			String layout = "/layout";
 			String recordType = "/recordType";
 			 
-			//String email = xPath.compile(expression).evaluate(xmlDocument);
-			//Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+
+			Node targetProfile = (Node) xPath.compile(profile).evaluate(targetDOM, XPathConstants.NODE);
+			NodeList targetNodeList = (NodeList) xPath.compile(profile+layoutAssignments).evaluate(targetDOM, XPathConstants.NODESET);
+			NodeList sourceNodeList = (NodeList) xPath.compile(profile+layoutAssignments).evaluate(sourceDOM, XPathConstants.NODESET);
+			System.out.println(sourceNodeList.getLength());
+			System.out.println(targetNodeList.getLength());
+			System.out.println(sourceNodeList.item(0).getFirstChild().getNextSibling().getFirstChild().getNodeValue());
 			
-			NodeList delNodeList = (NodeList) xPath.compile(layoutAssignments+layout).evaluate(newXmlDocument, XPathConstants.NODESET);
-			
-			NodeList nodeList = (NodeList) xPath.compile(layoutAssignments+layout).evaluate(xmlDocument, XPathConstants.NODESET);
-			System.out.println(nodeList.getLength());
-			for (int i = 0,j = 0; i < nodeList.getLength() || j < delNodeList.getLength(); i++,j++) {
-			    if(nodeList.item(i).getFirstChild().getNodeValue().equals(delNodeList.item(j).getFirstChild().getNodeValue()))
-			    	System.out.println(nodeList.item(i).getFirstChild().getNodeValue()+" <=> "+delNodeList.item(j).getFirstChild().getNodeValue());
+			for (int i = 0,j = 0; i < sourceNodeList.getLength() || j < targetNodeList.getLength(); i++,j++) {
+			    if(sourceNodeList.item(i).getFirstChild().getNextSibling().getFirstChild().getNodeValue().equals(targetNodeList.item(j).getFirstChild().getNextSibling().getFirstChild().getNodeValue()))
+			    	System.out.println(sourceNodeList.item(i).getFirstChild().getNextSibling().getFirstChild().getNodeValue()+
+			    			" <=> "+
+			    			targetNodeList.item(j).getFirstChild().getNextSibling().getFirstChild().getNodeValue());
 			    else{
-			    	Node n = nodeList.item(i).getFirstChild().cloneNode(true);
-			    	newXmlDocument.appendChild(n);
+			    	System.out.println("\tcopy here!");
+			    	targetProfile.insertBefore(targetDOM.adoptNode(sourceNodeList.item(i).cloneNode(true)), targetNodeList.item(j));
+			    	j--;
 			    }
 //			    newXmlDocument.replaceChild(nodeList.item(i).getFirstChild(), delNodeList.item(i).getFirstChild());
 			}
-			
+			TransformerFactory.newInstance().newTransformer().transform(
+				    new DOMSource(targetDOM),
+				    new StreamResult(new FileOutputStream("Adminew.profile"))
+				);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace(); 
 		} catch (SAXException e) {
