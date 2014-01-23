@@ -1,12 +1,12 @@
-//String value = xPath.compile(expression).evaluate(xmlDocument);
-//Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
-//NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+// How to get a
+// String value = xPath.compile(expression).evaluate(xmlDocument);
+// Node node = (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+// NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
 
 package xml.Parser;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,10 +38,7 @@ public class ReadXMLFile {
 			XPath xPath =  XPathFactory.newInstance().newXPath();
 			String profile = "/Profile";
 			String layoutAssignments = "/layoutAssignments";
-			String layout = "/layout";
-			String recordType = "/recordType";
-			 
-
+			
 			Node targetProfile = (Node) xPath.compile(profile).evaluate(targetDOM, XPathConstants.NODE);
 			NodeList targetNodeList = (NodeList) xPath.compile(profile+layoutAssignments).evaluate(targetDOM, XPathConstants.NODESET);
 			NodeList sourceNodeList = (NodeList) xPath.compile(profile+layoutAssignments).evaluate(sourceDOM, XPathConstants.NODESET);
@@ -59,8 +56,9 @@ public class ReadXMLFile {
 			    	targetProfile.insertBefore(targetDOM.adoptNode(sourceNodeList.item(i).cloneNode(true)), targetNodeList.item(j));
 			    	j--;
 			    }
-//			    newXmlDocument.replaceChild(nodeList.item(i).getFirstChild(), delNodeList.item(i).getFirstChild());
 			}
+			
+			//write to target file
 			TransformerFactory.newInstance().newTransformer().transform(
 				    new DOMSource(targetDOM),
 				    new StreamResult(new FileOutputStream("Adminew.profile"))
